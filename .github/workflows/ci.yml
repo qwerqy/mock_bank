@@ -2,21 +2,38 @@ name: ci-test
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
+# Service containers to run with `container-job`
+services:
+  # Label used to access the service container
+  postgres:
+    # Docker Hub image
+    image: postgres
+    # Provide the password for postgres
+    env:
+      POSTGRES_PASSWORD: secret
+      POSTGRES_USER: root
+      POSTGRES_DB: mock_bank
+
+    # Set health checks to wait until postgres has started
+    options: >-
+      --health-cmd pg_isready
+      --health-interval 10s
+      --health-timeout 5s
+      --health-retries 5
 jobs:
-
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.17
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
 
-    - name: Test
-      run: make test
+      - name: Test
+        run: make test
