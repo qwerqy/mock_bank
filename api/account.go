@@ -2,6 +2,7 @@ package api
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -28,11 +29,12 @@ func (server *Server) createAccount(ctx *gin.Context) {
 
 	account, err := server.store.CreateAccount(ctx, arg)
 	if err != nil {
+
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, account)
+	ctx.JSON(http.StatusCreated, account)
 }
 
 type getAccountRequest struct {
@@ -69,6 +71,7 @@ func (server *Server) listAccounts(ctx *gin.Context) {
 	var req listAccountsRequest
 
 	if err := ctx.ShouldBindQuery(&req); err != nil {
+		fmt.Print(err)
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
