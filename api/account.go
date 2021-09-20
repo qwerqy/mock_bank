@@ -112,6 +112,7 @@ func (server *Server) updateAccount(ctx *gin.Context) {
 	}
 
 	if err := ctx.ShouldBindJSON(&jsonReq); err != nil {
+		fmt.Print(err)
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -124,6 +125,7 @@ func (server *Server) updateAccount(ctx *gin.Context) {
 	account, err := server.store.UpdateAccount(ctx, arg)
 	if err != nil {
 		if err == sql.ErrNoRows {
+			fmt.Print(err)
 			ctx.JSON(http.StatusNotFound, errorResponse(err))
 			return
 		}
